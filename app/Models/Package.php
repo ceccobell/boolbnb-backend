@@ -9,6 +9,12 @@ class Package extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'package_name',
+        'price',
+        'hours',
+    ];
+
     // Relazione molti a molti con Sponsor (attraverso la tabella sponsor)
     public function sponsors()
     {

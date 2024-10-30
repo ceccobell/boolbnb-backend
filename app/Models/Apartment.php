@@ -9,6 +9,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Apartment extends Model
 {
+    use HasFactory;
+
+    protected $fillable = [
+        'user_id',
+        'slug',
+        'property',
+        'city',
+        'address',
+        'description',
+        'n_rooms',
+        'n_beds',
+        'n_bathrooms',
+        'square_meters',
+        'latitude',
+        'longitude',
+        'status',
+    ];
     // Relazione uno a molti inversa con User
     public function user()
     {

@@ -15,9 +15,10 @@ return new class extends Migration
     {
         Schema::create('packages', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 15);
-            $table->decimal('price', 8, 2);
+            $table->string('package_name', 15);
+            $table->decimal('price', 6, 2);
             $table->integer('hours');
+            $table->timestamps();
         });
 
     }

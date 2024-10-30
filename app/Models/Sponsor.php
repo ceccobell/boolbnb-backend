@@ -9,6 +9,13 @@ class Sponsor extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'apartament_id',
+        'package_id',
+        'sponsor_start',
+        'sponsor_end',
+    ];
+
     // Relazione uno a molti inversa con Apartment
     public function apartment()
     {
