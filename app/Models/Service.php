@@ -9,6 +9,11 @@ class Service extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'service_name',
+        'service_icon',
+    ];
+
     // Relazione molti a molti con Apartment (attraverso la tabella pivot `apartment_service`)
     public function apartments()
     {
