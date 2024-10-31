@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
@@ -49,6 +50,7 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($users_data as $user) {
+            $user['password'] = Hash::make($user['password']);  // password cript
             User::create($user);
         }
     }

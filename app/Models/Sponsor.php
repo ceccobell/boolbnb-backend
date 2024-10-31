@@ -10,7 +10,7 @@ class Sponsor extends Model
     use HasFactory;
 
     protected $fillable = [
-        'apartament_id',
+        'apartment_id',
         'package_id',
         'sponsor_start',
         'sponsor_end',

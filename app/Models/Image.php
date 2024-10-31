@@ -10,7 +10,7 @@ class Image extends Model
     use HasFactory;
 
     protected $fillable = [
-        'apartament_id',
+        'apartment_id',
         'image_url'
     ];
 
