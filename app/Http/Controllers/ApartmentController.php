@@ -28,7 +28,7 @@ class ApartmentController extends Controller
     public function create()
     {
         $services = Service::all();
-        return view('apartment.create', compact('services'));
+        return view('apartments.create', compact('services'));
     }
 
     /**
@@ -74,7 +74,7 @@ class ApartmentController extends Controller
     public function show($id)
     {
         $apartment = Apartment::findOrFail($id);
-        return view('apartment.show', compact('apartment'));
+        return view('apartments.show', compact('apartment'));
     }
 
     /**
@@ -87,7 +87,7 @@ class ApartmentController extends Controller
     {
         $apartment = Apartment::findOrFail($id);
         $services = Service::all();
-        return view('apartment.edit', compact('apartment', 'services'));
+        return view('apartments.edit', compact('apartment', 'services'));
     }
 
     /**
@@ -139,8 +139,13 @@ class ApartmentController extends Controller
     public function destroy($id)
     {
         $apartment = Apartment::findOrFail($id);
-        // Delete the image
-        Storage::disk('public')->delete($apartment->image);
+
+        // Delete the main image if it exists
+        if ($apartment->mainImage) {
+            Storage::disk('public')->delete($apartment->mainImage->image_url);
+        }
+
+        // Delete the apartment
         $apartment->delete();
 
         return redirect()->route('apartments.index')->with('success', 'Apartment deleted successfully.');
