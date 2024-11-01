@@ -15,9 +15,7 @@ use App\Http\Controllers\ApartmentController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [ApartmentController::class, 'index'])->middleware('auth')->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -29,6 +27,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('apartaments', ApartmentController::class);
+Route::middleware(['auth'])->group(function () {
+    Route::resource('apartments', ApartmentController::class);
+});
 
 require __DIR__.'/auth.php';
