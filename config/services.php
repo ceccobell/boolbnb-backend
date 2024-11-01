@@ -31,4 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'tomtom' => [
+    'key' => env('LAT_LONG_API_KEY'),
+    'url' => 'https://api.tomtom.com/search/2/geocode/',
+    ],
+
+
 ];
