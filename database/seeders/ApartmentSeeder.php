@@ -18,6 +18,7 @@ class ApartmentSeeder extends Seeder
             [
                 'user_id' => 1,
                 'slug' => 'appartamento-1',
+                'title' => 'Appartamento nel centro di Roma',
                 'property' => 'Appartamento Privato',
                 'city' => 'Roma',
                 'address' => 'Via Roma, 1',
@@ -33,6 +34,7 @@ class ApartmentSeeder extends Seeder
             [
                 'user_id' => 2,
                 'slug' => 'appartamento-2',
+                'title' => 'Appartamento nel centro di Milano',
                 'property' => 'Studio',
                 'city' => 'Milano',
                 'address' => 'Corso Milano, 2',
@@ -48,6 +50,7 @@ class ApartmentSeeder extends Seeder
             [
                 'user_id' => 3,
                 'slug' => 'appartamento-3',
+                'title' => 'Appartamento nel centro di Torino',
                 'property' => 'Bilocale',
                 'city' => 'Firenze',
                 'address' => 'Via Firenze, 3',
@@ -63,6 +66,7 @@ class ApartmentSeeder extends Seeder
             [
                 'user_id' => 1,
                 'slug' => 'appartamento-4',
+                'title' => 'Appartamento nel centro di Napoli',
                 'property' => 'Appartamento Familiare',
                 'city' => 'Napoli',
                 'address' => 'Via Napoli, 4',
@@ -78,6 +82,7 @@ class ApartmentSeeder extends Seeder
             [
                 'user_id' => 2,
                 'slug' => 'appartamento-5',
+                'title' => 'Appartamento nel centro di Verona',
                 'property' => 'Appartamento in Centro',
                 'city' => 'Torino',
                 'address' => 'Via Torino, 5',
@@ -93,6 +98,7 @@ class ApartmentSeeder extends Seeder
             [
                 'user_id' => 3,
                 'slug' => 'appartamento-6',
+                'title' => 'Appartamento nel centro di Firenze',
                 'property' => 'Attico',
                 'city' => 'Bologna',
                 'address' => 'Via Bologna, 6',
