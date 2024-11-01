@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Apartment;
+use App\Models\Service;
+use Illuminate\Support\Facades\Storage;
 
 class ApartmentController extends Controller
 {
@@ -41,10 +43,26 @@ class ApartmentController extends Controller
             'property' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'description' => 'required|text',
-            'price' => 'required',
-            'image' => 'required',
+            'description' => 'required|string',
+            'price' => 'required|numeric',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image
         ]);
+
+        // Store image
+        $imagePath = $request->file('image')->store('apartments', 'public');
+
+        // Create new apartment
+        Apartment::create([
+            'user_id' => auth()->id(), // Assuming the user is authenticated
+            'property' => $request->property,
+            'city' => $request->city,
+            'address' => $request->address,
+            'description' => $request->description,
+            'price' => $request->price,
+            'image' => $imagePath,
+        ]);
+
+        return redirect()->route('apartments.index')->with('success', 'Apartment created successfully.');
     }
 
     /**
@@ -55,7 +73,8 @@ class ApartmentController extends Controller
      */
     public function show($id)
     {
-        //
+        $apartment = Apartment::findOrFail($id);
+        return view('apartment.show', compact('apartment'));
     }
 
     /**
@@ -66,7 +85,9 @@ class ApartmentController extends Controller
      */
     public function edit($id)
     {
-        //
+        $apartment = Apartment::findOrFail($id);
+        $services = Service::all();
+        return view('apartment.edit', compact('apartment', 'services'));
     }
 
     /**
@@ -78,7 +99,35 @@ class ApartmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'property' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image
+        ]);
+
+        $apartment = Apartment::findOrFail($id);
+
+        // Store new image if uploaded
+        if ($request->hasFile('image')) {
+            // Delete the old image
+            Storage::disk('public')->delete($apartment->image);
+            $imagePath = $request->file('image')->store('apartments', 'public');
+            $apartment->image = $imagePath;
+        }
+
+        // Update apartment details
+        $apartment->update([
+            'property' => $request->property,
+            'city' => $request->city,
+            'address' => $request->address,
+            'description' => $request->description,
+            'price' => $request->price,
+        ]);
+
+        return redirect()->route('apartments.index')->with('success', 'Apartment updated successfully.');
     }
 
     /**
@@ -89,6 +138,11 @@ class ApartmentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $apartment = Apartment::findOrFail($id);
+        // Delete the image
+        Storage::disk('public')->delete($apartment->image);
+        $apartment->delete();
+
+        return redirect()->route('apartments.index')->with('success', 'Apartment deleted successfully.');
     }
 }
