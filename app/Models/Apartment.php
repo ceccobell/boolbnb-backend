@@ -5,8 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-// App\Models\Apartment.php
-
 class Apartment extends Model
 {
     use HasFactory;
@@ -26,41 +24,58 @@ class Apartment extends Model
         'latitude',
         'longitude',
         'status',
+        'main_image_id',
     ];
-    // Relazione uno a molti inversa con User
+
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Relazione molti a molti con Sponsor
+
     public function sponsors()
     {
         return $this->belongsToMany(Sponsor::class);
     }
 
-    // Relazione molti a molti con Service
+
     public function services()
     {
         return $this->belongsToMany(Service::class);
     }
 
-    // Relazione uno a molti con View
+
     public function views()
     {
         return $this->hasMany(View::class);
     }
 
-    // Relazione uno a molti con Message
+
     public function messages()
     {
         return $this->hasMany(Message::class);
     }
 
-    // Relazione uno a molti con Image
     public function images()
     {
         return $this->hasMany(Image::class);
     }
-}
 
+
+    public function mainImage()
+    {
+        return $this->belongsTo(Image::class, 'main_image_id');
+    }
+
+
+    public function getMainImageUrlAttribute()
+    {
+
+        if ($this->mainImage) {
+            return $this->mainImage->url;
+        }
+
+        return 'https://via.placeholder.com/600x400.png?text=Immagine%20non%20disponibile'; // URL dell'immagine di placeholder online
+    }
+}

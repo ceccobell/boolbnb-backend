@@ -14,7 +14,6 @@ class Image extends Model
         'image_url'
     ];
 
-    // Relazione uno a molti inversa con Apartment
     public function apartment()
     {
         return $this->belongsTo(Apartment::class);
