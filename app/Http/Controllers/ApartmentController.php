@@ -25,7 +25,8 @@ class ApartmentController extends Controller
      */
     public function create()
     {
-        //
+        $services = Service::all();
+        return view('apartment.create', compact('services'));
     }
 
     /**
@@ -36,7 +37,14 @@ class ApartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'property' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'description' => 'required|text',
+            'price' => 'required',
+            'image' => 'required',
+        ]);
     }
 
     /**
