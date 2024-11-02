@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Apartment;
 use App\Models\Service;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 
 class ApartmentController extends Controller
 {
@@ -31,6 +32,26 @@ class ApartmentController extends Controller
         return view('apartments.create', compact('services'));
     }
 
+    public function getCoordinates($address)
+    {
+        $url = config('services.tomtom.url') . urlencode($address) . '.json';
+        $apiKey = config('services.tomtom.key');
+
+        $response = Http::get($url, [
+        'key' => $apiKey,
+        ]);
+
+        if ($response->successful() && isset($response['results'][0]['position'])) {
+            $coordinates = $response['results'][0]['position'];
+                    return [
+                'latitude' => $coordinates['lat'],
+                'longitude' => $coordinates['lon'],
+            ];
+        }
+
+    return null;  // Gestione degli errori se l'indirizzo non viene trovato
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -46,7 +67,15 @@ class ApartmentController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image
+            'status' => 'required|string|max:30',
         ]);
+
+        // get coordinates
+        $coordinates = $this->getCoordinates($request->address);
+
+        if (!$coordinates) {
+        return redirect()->back()->withErrors(['address' => 'Address not found.']);
+        }
 
         // Store image
         $imagePath = $request->file('image')->store('apartments', 'public');
@@ -54,12 +83,21 @@ class ApartmentController extends Controller
         // Create new apartment
         Apartment::create([
             'user_id' => auth()->id(), // Assuming the user is authenticated
+            'title' => $request->title,
             'property' => $request->property,
+            'slug' => Apartment::generateSlug($request->property),
             'city' => $request->city,
             'address' => $request->address,
+            'n_rooms' => $request->n_rooms,
+            'n_beds' => $request->n_beds,
+            'n_bathrooms' => $request->n_bathrooms,
+            'square_meters' => $request->square_meters,
             'description' => $request->description,
             'price' => $request->price,
             'image' => $imagePath,
+            'status' => $request->status,
+            'latitude' => $coordinates['latitude'],
+            'longitude' => $coordinates['longitude'], 
         ]);
 
         return redirect()->route('apartments.index')->with('success', 'Apartment created successfully.');

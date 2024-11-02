@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Apartment extends Model
 {
@@ -26,6 +27,10 @@ class Apartment extends Model
         'status',
         'main_image_id',
     ];
+
+    public static function generateSlug($property){
+        return Str::slug($property, '-');
+    }
 
 
     public function user()
