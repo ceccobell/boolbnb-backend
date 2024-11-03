@@ -43,7 +43,7 @@ class ApartmentController extends Controller
 
         if ($response->successful() && isset($response['results'][0]['position'])) {
             $coordinates = $response['results'][0]['position'];
-                    return [
+            return [
                 'latitude' => $coordinates['lat'],
                 'longitude' => $coordinates['lon'],
             ];
@@ -66,7 +66,7 @@ class ApartmentController extends Controller
             'address' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|string|max:30',
         ]);
 
