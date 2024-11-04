@@ -71,11 +71,11 @@ class Apartment extends Model
 
     public function mainImage()
     {
-        return $this->belongsTo(Image::class, 'main_image_id');
+        return $this->hasOne(Image::class)->where('is_main', true);
     }
 
 
-    public function getMainImageUrlAttribute()
+    /* public function getMainImageUrlAttribute()
     {
 
         if ($this->main_image_id) {
@@ -83,5 +83,5 @@ class Apartment extends Model
         }
 
         return 'https://via.placeholder.com/600x400.png?text=Immagine%20non%20disponibile'; // URL dell'immagine di placeholder online
-    }
+    } */
 }

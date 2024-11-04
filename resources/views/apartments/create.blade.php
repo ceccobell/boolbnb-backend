@@ -60,12 +60,12 @@
                             <input type="text" name="status" class="form-control" required>
                         </div>
                         <div class="mb-3 col-4">
-                            <label for="main_image_id" class="form-label">Immagine</label>
-                            <input type="file" name="main_image_id" class="form-control" required>
+                            <label for="main_image" class="form-label">Immagine</label>
+                            <input type="file" name="main_image" class="form-control" required>
                         </div>
                         <div class="mb-3 col-4">
-                            <label for="image" class="form-label">Immagine</label>
-                            <input type="file" name="image" class="form-control" required>
+                            <label for="image[]" class="form-label">Immagine</label>
+                            <input type="file" name="image[]" class="form-control" multiple>
                         </div>
                         @foreach ($services as $service)
                             <div class="mb-3 col-3">

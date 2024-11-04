@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('apartment_id')->constrained('apartments')->onDelete('cascade');
             $table->string('image_url', 100);
+            $table->boolean('is_main')->default(false);
+            $table->timestamps();
         });
 
     }
