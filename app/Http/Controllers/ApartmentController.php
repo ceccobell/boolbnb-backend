@@ -149,6 +149,8 @@ class ApartmentController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image
+            'services' => 'nullable|array', // Optional array of services
+            'services.*' => 'exists:services,id' // Each service must exist in the services table
         ]);
 
         $apartment = Apartment::findOrFail($id);
@@ -170,8 +172,12 @@ class ApartmentController extends Controller
             'price' => $request->price,
         ]);
 
+        // Sync selected services
+        $apartment->services()->sync($request->input('services', [])); // Use an empty array if no services selected
+
         return redirect()->route('apartments.index')->with('success', 'Apartment updated successfully.');
     }
+
 
     /**
      * Remove the specified resource from storage.
