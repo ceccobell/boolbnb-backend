@@ -1,1 +1,12 @@
-@import '~bootstrap/scss/bootstrap'
+@import "~bootstrap/scss/bootstrap";
+
+.bd {
+    border: 1px solid rgb(185, 185, 185);
+    border-radius: 20px;
+    padding: 0 5px 5px;
+    font-weight: bold;
+}
+
+.min-h {
+    min-height: 400px;
+}
