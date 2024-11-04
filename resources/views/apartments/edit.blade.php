@@ -7,6 +7,19 @@
             @csrf
             @method('PUT')
             <div class="row">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <div class="mb-3 col-12">
+                    <label for="title" class="form-label">Titolo annuncio</label>
+                    <input type="text" name="title" class="form-control" value="{{ $apartment->title }}" required>
+                </div>
                 <div class="mb-3 col-4">
                     <label for="property" class="form-label">Proprietà</label>
                     <input type="text" name="property" class="form-control" value="{{ $apartment->property }}" required>
@@ -32,8 +45,8 @@
                     <input type="file" name="main_image" class="form-control">
                 </div>
                 <div class="mb-3 col-6">
-                    <label for="image" class="form-label">Nuova Immagine (opzionale)</label>
-                    <input type="file" name="image" class="form-control">
+                    <label for="image[]" class="form-label">Nuova Immagine (opzionale)</label>
+                    <input type="file" name="image[]" class="form-control" multiple>
                 </div>
                 @foreach ($services as $service)
                     <div class="mb-3 col-3">

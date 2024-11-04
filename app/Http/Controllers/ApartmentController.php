@@ -9,6 +9,8 @@ use App\Models\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
 
 class ApartmentController extends Controller
 {
@@ -53,8 +55,8 @@ class ApartmentController extends Controller
             'city' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'description' => 'required|string',
-            'image.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'main_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image.*' => 'image|mimes:jpeg,png,jpg,gif',
+            'main_image' => 'required|image|mimes:jpeg,png,jpg,gif',
             'status' => 'required|string|max:30',
         ]);
 
@@ -125,19 +127,23 @@ class ApartmentController extends Controller
 
     public function update(Request $request, $id)
     {
+        Log::info("Inizio aggiornamento per l'appartamento ID: {$id}");
         $request->validate([
             'title' => 'required|string|max:255',
             'property' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'description' => 'required|string',
-            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'services' => 'nullable|array',
             'services.*' => 'exists:services,id'
         ]);
 
+        Log::info("Validazione completata per l'appartamento ID: {$id}");
+
         $apartment = Apartment::findOrFail($id);
+        Log::info("Appartamento trovato: ", $apartment->toArray());
 
         if ($request->hasFile('main_image')) {
             $oldMainImage = $apartment->images()->where('is_main', true)->first();
@@ -152,6 +158,7 @@ class ApartmentController extends Controller
             $mainImage->image_url = $mainImagePath;
             $mainImage->is_main = true;
             $mainImage->save();
+            Log::info("Nuova immagine principale salvata: {$mainImagePath}");
         }
 
         if ($request->hasFile('image')) {
@@ -163,6 +170,7 @@ class ApartmentController extends Controller
                 $image->image_url = $imagePath;
                 $image->is_main = false;
                 $image->save();
+                Log::info("Immagine aggiuntiva salvata: {$imagePath}");
             }
         }
 
@@ -170,6 +178,7 @@ class ApartmentController extends Controller
             'title', 'property', 'city', 'address', 'description', 'n_rooms', 'n_beds', 
             'n_bathrooms', 'square_meters', 'status'
         ]));
+        Log::info("Dettagli dell'appartamento aggiornati.");
 
         $apartment->services()->sync($request->input('services', []));
 
