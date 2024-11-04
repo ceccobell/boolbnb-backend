@@ -5,17 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Apartment;
 use App\Models\Service;
+use App\Models\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
 
 class ApartmentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $userId = Auth::id();
@@ -23,11 +21,6 @@ class ApartmentController extends Controller
         return view('apartments.index', compact('apartments'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $services = Service::all();
@@ -51,40 +44,30 @@ class ApartmentController extends Controller
             ];
         }
 
-        return null;  // Gestione degli errori se l'indirizzo non viene trovato
+        return null;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $request->validate([
+            'title' => 'required|string|max:255',
             'property' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'description' => 'required|string',
-            'image.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'main_image_id' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image.*' => 'image|mimes:jpeg,png,jpg,gif',
+            'main_image' => 'required|image|mimes:jpeg,png,jpg,gif',
             'status' => 'required|string|max:30',
         ]);
 
-        // get coordinates
         $coordinates = $this->getCoordinates($request->address);
 
         if (!$coordinates) {
             return redirect()->back()->withErrors(['address' => 'Address not found.']);
         }
 
-        // Store image
-        $imagePath = $request->file('image')->store('apartments', 'public');
-
-        // Create new apartment
         $apartment = Apartment::create([
-            'user_id' => auth()->id(), // Assuming the user is authenticated
+            'user_id' => auth()->id(),
             'title' => $request->title,
             'property' => $request->property,
             'slug' => Apartment::generateSlug($request->property),
@@ -95,14 +78,33 @@ class ApartmentController extends Controller
             'n_bathrooms' => $request->n_bathrooms,
             'square_meters' => $request->square_meters,
             'description' => $request->description,
-            'main_image_id' => $request->main_image_id,
-            'image' => $imagePath,
             'status' => $request->status,
             'latitude' => $coordinates['latitude'],
             'longitude' => $coordinates['longitude'],
         ]);
 
-        // Salva i servizi associati
+        if ($request->hasFile('main_image')) {
+            $mainImagePath = $request->file('main_image')->store('apartments', 'public');
+
+            $mainImage = new Image();
+            $mainImage->apartment_id = $apartment->id;
+            $mainImage->image_url = $mainImagePath;
+            $mainImage->is_main = true;
+            $mainImage->save();
+        }
+
+        if ($request->hasFile('image')) {
+            foreach ($request->file('image') as $imageFile) {
+                $imagePath = $imageFile->store('apartments', 'public');
+
+                $image = new Image();
+                $image->apartment_id = $apartment->id;
+                $image->image_url = $imagePath;
+                $image->is_main = false;
+                $image->save();
+            }
+        }
+
         if ($request->has('services')) {
             $apartment->services()->attach($request->services);
         }
@@ -110,24 +112,12 @@ class ApartmentController extends Controller
         return redirect()->route('apartments.index')->with('success', 'Apartment created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $apartment = Apartment::findOrFail($id);
         return view('apartments.show', compact('apartment'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $apartment = Apartment::findOrFail($id);
@@ -135,67 +125,75 @@ class ApartmentController extends Controller
         return view('apartments.edit', compact('apartment', 'services'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
+        Log::info("Inizio aggiornamento per l'appartamento ID: {$id}");
         $request->validate([
+            'title' => 'required|string|max:255',
             'property' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'description' => 'required|string',
-            'main_image_id' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'services' => 'nullable|array',
             'services.*' => 'exists:services,id'
         ]);
 
-        $apartment = Apartment::findOrFail($id);
+        Log::info("Validazione completata per l'appartamento ID: {$id}");
 
-        // Store new image if uploaded
-        if ($request->hasFile('image')) {
-            // Delete the old image
-            Storage::disk('public')->delete($apartment->image);
-            $imagePath = $request->file('image')->store('apartments', 'public');
-            $apartment->image = $imagePath;
+        $apartment = Apartment::findOrFail($id);
+        Log::info("Appartamento trovato: ", $apartment->toArray());
+
+        if ($request->hasFile('main_image')) {
+            $oldMainImage = $apartment->images()->where('is_main', true)->first();
+            if ($oldMainImage) {
+                Storage::disk('public')->delete($oldMainImage->image_url);
+                $oldMainImage->delete();
+            }
+
+            $mainImagePath = $request->file('main_image')->store('apartments', 'public');
+            $mainImage = new Image();
+            $mainImage->apartment_id = $apartment->id;
+            $mainImage->image_url = $mainImagePath;
+            $mainImage->is_main = true;
+            $mainImage->save();
+            Log::info("Nuova immagine principale salvata: {$mainImagePath}");
         }
 
-        // Update apartment details
-        $apartment->update([
-            'property' => $request->property,
-            'city' => $request->city,
-            'address' => $request->address,
-            'description' => $request->description,
-        ]);
+        if ($request->hasFile('image')) {
+            foreach ($request->file('image') as $imageFile) {
+                $imagePath = $imageFile->store('apartments', 'public');
 
-        // Sync selected services
-        $apartment->services()->sync($request->input('services', [])); // Use an empty array if no services selected
+                $image = new Image();
+                $image->apartment_id = $apartment->id;
+                $image->image_url = $imagePath;
+                $image->is_main = false;
+                $image->save();
+                Log::info("Immagine aggiuntiva salvata: {$imagePath}");
+            }
+        }
+
+        $apartment->update($request->only([
+            'title', 'property', 'city', 'address', 'description', 'n_rooms', 'n_beds', 
+            'n_bathrooms', 'square_meters', 'status'
+        ]));
+        Log::info("Dettagli dell'appartamento aggiornati.");
+
+        $apartment->services()->sync($request->input('services', []));
 
         return redirect()->route('apartments.index')->with('success', 'Apartment updated successfully.');
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $apartment = Apartment::findOrFail($id);
 
-        // Delete the main image if it exists
-        if ($apartment->mainImage) {
-            Storage::disk('public')->delete($apartment->mainImage->image_url);
+        foreach ($apartment->images as $image) {
+            Storage::disk('public')->delete($image->image_url);
+            $image->delete();
         }
 
-        // Delete the apartment
         $apartment->delete();
 
         return redirect()->route('apartments.index')->with('success', 'Apartment deleted successfully.');

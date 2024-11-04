@@ -9,7 +9,7 @@
                 <div class="col-3">
                     <div class="card min-h mb-3">
                         <div>
-                            <img src="{{ $apartment->getMainImageUrlAttribute() }}" class="card-img-top"
+                            <img src="{{ asset($apartment->mainImage ? 'storage/' . $apartment->mainImage->image_url : 'https://via.placeholder.com/600x400.png?text=Immagine%20non%20disponibile') }}" class="card-img-top"
                                 alt="{{ $apartment->title }}">
                         </div>
                         <div class="card-body d-flex flex-column">

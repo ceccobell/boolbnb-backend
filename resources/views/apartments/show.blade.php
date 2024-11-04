@@ -50,7 +50,7 @@
                 <div class="card p-4 min-h">
                     <h3>Property Image</h3>
                     <div class="image pt-5">
-                        <img src="{{ $apartment->getMainImageUrlAttribute() }}" class="card-img-top"
+                        <img src="{{ asset($apartment->mainImage ? 'storage/' . $apartment->mainImage->image_url : 'https://via.placeholder.com/600x400.png?text=Immagine%20non%20disponibile') }}" class="card-img-top"
                             alt="{{ $apartment->title }}">
                     </div>
                 </div>
