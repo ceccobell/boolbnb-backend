@@ -81,7 +81,7 @@ class ApartmentController extends Controller
         $imagePath = $request->file('image')->store('apartments', 'public');
 
         // Create new apartment
-        Apartment::create([
+        $apartment = Apartment::create([
             'user_id' => auth()->id(), // Assuming the user is authenticated
             'title' => $request->title,
             'property' => $request->property,
@@ -99,6 +99,11 @@ class ApartmentController extends Controller
             'latitude' => $coordinates['latitude'],
             'longitude' => $coordinates['longitude'], 
         ]);
+
+        // Salva i servizi associati
+        if ($request->has('services')) {
+            $apartment->services()->attach($request->services);
+        }
 
         return redirect()->route('apartments.index')->with('success', 'Apartment created successfully.');
     }
