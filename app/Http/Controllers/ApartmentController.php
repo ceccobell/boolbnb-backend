@@ -38,7 +38,7 @@ class ApartmentController extends Controller
         $apiKey = config('services.tomtom.key');
 
         $response = Http::get($url, [
-        'key' => $apiKey,
+            'key' => $apiKey,
         ]);
 
         if ($response->successful() && isset($response['results'][0]['position'])) {
@@ -49,7 +49,7 @@ class ApartmentController extends Controller
             ];
         }
 
-    return null;  // Gestione degli errori se l'indirizzo non viene trovato
+        return null;  // Gestione degli errori se l'indirizzo non viene trovato
     }
 
     /**
@@ -65,8 +65,8 @@ class ApartmentController extends Controller
             'city' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'required|numeric',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'main_image_id' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|string|max:30',
         ]);
 
@@ -74,7 +74,7 @@ class ApartmentController extends Controller
         $coordinates = $this->getCoordinates($request->address);
 
         if (!$coordinates) {
-        return redirect()->back()->withErrors(['address' => 'Address not found.']);
+            return redirect()->back()->withErrors(['address' => 'Address not found.']);
         }
 
         // Store image
@@ -93,11 +93,11 @@ class ApartmentController extends Controller
             'n_bathrooms' => $request->n_bathrooms,
             'square_meters' => $request->square_meters,
             'description' => $request->description,
-            'price' => $request->price,
+            'main_image_id' => $request->main_image_id,
             'image' => $imagePath,
             'status' => $request->status,
             'latitude' => $coordinates['latitude'],
-            'longitude' => $coordinates['longitude'], 
+            'longitude' => $coordinates['longitude'],
         ]);
 
         // Salva i servizi associati
@@ -147,10 +147,10 @@ class ApartmentController extends Controller
             'city' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image
-            'services' => 'nullable|array', // Optional array of services
-            'services.*' => 'exists:services,id' // Each service must exist in the services table
+            'main_image_id' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'services' => 'nullable|array',
+            'services.*' => 'exists:services,id'
         ]);
 
         $apartment = Apartment::findOrFail($id);
@@ -169,7 +169,6 @@ class ApartmentController extends Controller
             'city' => $request->city,
             'address' => $request->address,
             'description' => $request->description,
-            'price' => $request->price,
         ]);
 
         // Sync selected services

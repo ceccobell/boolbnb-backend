@@ -7,15 +7,15 @@
                 <h1>Aggiungi Appartamento</h1>
             </div>
             <div class="col-12">
-            @if($errors->any())
-                <div class="alert alert-danger">
-                    <ul class="list-unstyled">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="list-unstyled">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <form action="{{ route('apartments.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
@@ -60,8 +60,8 @@
                             <input type="text" name="status" class="form-control" required>
                         </div>
                         <div class="mb-3 col-4">
-                            <label for="price" class="form-label">Prezzo</label>
-                            <input type="number" name="price" class="form-control" required>
+                            <label for="main_image_id" class="form-label">Immagine</label>
+                            <input type="file" name="main_image_id" class="form-control" required>
                         </div>
                         <div class="mb-3 col-4">
                             <label for="image" class="form-label">Immagine</label>
@@ -70,8 +70,11 @@
                         @foreach ($services as $service)
                             <div class="mb-3 col-3">
                                 <div class="form-check">
-                                    <input type="checkbox" name="services[]" value="{{ $service->id }}" class="form-check-input" id="service-{{ $service->id }}">
-                                    <label class="form-check-label" for="service-{{ $service->id }}">{{ $service->service_name }} <i class="{{ $service->service_icon }}"></i></label>
+                                    <input type="checkbox" name="services[]" value="{{ $service->id }}"
+                                        class="form-check-input" id="service-{{ $service->id }}">
+                                    <label class="form-check-label"
+                                        for="service-{{ $service->id }}">{{ $service->service_name }} <i
+                                            class="{{ $service->service_icon }}"></i></label>
                                 </div>
                             </div>
                         @endforeach

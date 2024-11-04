@@ -4,10 +4,20 @@
     <div class="container">
         <div class="row">
             <div class="col-12  mt-5">
-            <a href="{{ route('apartments.index') }}" class="btn rounded-pill fs-3">&larr;</a>
-            </div>
-            <div class="col-12 mb-3">
-                <h1>{{ $apartment->title }}</h1>
+                <div class="row my-2">
+                    <div class="col-2">
+                        <button>
+                            <a href="{{ route('apartments.index') }}" class="btn rounded-pill fs-3"><i
+                                    class="fas fa-arrow-left"></i></a>
+                        </button>
+                    </div>
+                    <div class="col-8 text-center">
+                        <h1>{{ $apartment->title }}</h1>
+                    </div>
+                    <div class="col-2 justify-content-center align-content-center">
+                        <i class="fa-solid fa-circle-info fa-lg"></i>
+                    </div>
+                </div>
             </div>
             <div class="col-8">
                 <div class="card p-4 min-h">
@@ -28,7 +38,7 @@
                         <div class="col-12">
                             <span class="text-secondary">Status</span>
                             <p class="mt-2">
-                                <span  class="bd">
+                                <span class="bd">
                                     {{ $apartment->status }}
                                 </span>
                             </p>
@@ -41,7 +51,7 @@
                     <h3>Property Image</h3>
                     <div class="image pt-5">
                         <img src="{{ $apartment->getMainImageUrlAttribute() }}" class="card-img-top"
-                        alt="{{ $apartment->title }}">
+                            alt="{{ $apartment->title }}">
                     </div>
                 </div>
             </div>
@@ -75,6 +85,14 @@
             <div class="col-12 mt-4">
                 <div class="card p-4">
                     <h3>Services</h3>
+                    <div class="row">
+                        @foreach ($apartment->services as $service)
+                            <div class="col-3 my-2">
+                                <span class="text-secondary">{{ $service->service_name }}</span>
+                                <i class="{{ $service->service_icon }}"></i>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>

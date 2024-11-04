@@ -28,7 +28,8 @@ class Apartment extends Model
         'main_image_id',
     ];
 
-    public static function generateSlug($property){
+    public static function generateSlug($property)
+    {
         return Str::slug($property, '-');
     }
 
@@ -77,8 +78,8 @@ class Apartment extends Model
     public function getMainImageUrlAttribute()
     {
 
-        if ($this->mainImage) {
-            return $this->mainImage->url;
+        if ($this->main_image_id) {
+            return $this->main_image_id->url;
         }
 
         return 'https://via.placeholder.com/600x400.png?text=Immagine%20non%20disponibile'; // URL dell'immagine di placeholder online

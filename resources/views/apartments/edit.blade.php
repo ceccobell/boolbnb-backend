@@ -28,14 +28,21 @@
                     <input type="number" name="price" class="form-control" value="{{ $apartment->price }}" required>
                 </div>
                 <div class="mb-3 col-6">
+                    <label for="main_image_id" class="form-label">Immagine copertina (opzionale)</label>
+                    <input type="file" name="main_image_id" class="form-control">
+                </div>
+                <div class="mb-3 col-6">
                     <label for="image" class="form-label">Nuova Immagine (opzionale)</label>
                     <input type="file" name="image" class="form-control">
                 </div>
                 @foreach ($services as $service)
                     <div class="mb-3 col-3">
                         <div class="form-check">
-                            <input type="checkbox" name="services[]" value="{{ $service->id }}" class="form-check-input" id="service-{{ $service->id }}" {{ $apartment->services->contains($service->id) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="service-{{ $service->id }}">{{ $service->service_name }} <i class="{{ $service->service_icon }}"></i></label>
+                            <input type="checkbox" name="services[]" value="{{ $service->id }}" class="form-check-input"
+                                id="service-{{ $service->id }}"
+                                {{ $apartment->services->contains($service->id) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="service-{{ $service->id }}">{{ $service->service_name }}
+                                <i class="{{ $service->service_icon }}"></i></label>
                         </div>
                     </div>
                 @endforeach
