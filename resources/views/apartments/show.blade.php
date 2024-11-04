@@ -9,6 +9,14 @@
         <p><strong>Indirizzo:</strong> {{ $apartment->address }}</p>
         <p><strong>Descrizione:</strong> {{ $apartment->description }}</p>
         <p><strong>Prezzo:</strong> {{ $apartment->price }} €</p>
+        <p><strong>Servizi:</strong></p>
+        <ul>
+            @forelse ($apartment->services as $service)
+                <li>{{ $service->service_name }} <i class="{{ $service->service_icon }}"></i></li>
+            @empty
+                <li>Nessun servizio disponibile per questo appartamento.</li>
+            @endforelse
+        </ul>
         <a href="{{ route('apartments.edit', $apartment->id) }}" class="btn btn-warning">Modifica</a>
         <form action="{{ route('apartments.destroy', $apartment->id) }}" method="POST" style="display: inline;">
             @csrf

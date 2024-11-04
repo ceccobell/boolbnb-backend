@@ -71,7 +71,7 @@
                             <div class=" mb-3 col-3">
                                 <div class="form-check">
                                     <input type="checkbox" name="services[]" value="{{ $service->id }}" class="form-check-input" id="service-{{ $service->id }}">
-                                    <label class="form-check-label" for="service-{{ $service->id }}">{{ $service->service_name }}</label>
+                                    <label class="form-check-label" for="service-{{ $service->id }}">{{ $service->service_name }} <i class="{{ $service->service_icon }}"></i></label>
                                 </div>
                             </div>
                         @endforeach
