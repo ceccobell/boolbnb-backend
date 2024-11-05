@@ -114,13 +114,13 @@ class ApartmentController extends Controller
 
     public function show($id)
     {
-        $apartment = Apartment::findOrFail($id);
+        $apartment = Apartment::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
         return view('apartments.show', compact('apartment'));
     }
 
     public function edit($id)
     {
-        $apartment = Apartment::findOrFail($id);
+        $apartment = Apartment::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
         $services = Service::all();
         return view('apartments.edit', compact('apartment', 'services'));
     }
@@ -142,7 +142,7 @@ class ApartmentController extends Controller
 
         Log::info("Validazione completata per l'appartamento ID: {$id}");
 
-        $apartment = Apartment::findOrFail($id);
+        $apartment = Apartment::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
         Log::info("Appartamento trovato: ", $apartment->toArray());
 
         if ($request->hasFile('main_image')) {
@@ -175,8 +175,16 @@ class ApartmentController extends Controller
         }
 
         $apartment->update($request->only([
-            'title', 'property', 'city', 'address', 'description', 'n_rooms', 'n_beds', 
-            'n_bathrooms', 'square_meters', 'status'
+            'title',
+            'property',
+            'city',
+            'address',
+            'description',
+            'n_rooms',
+            'n_beds',
+            'n_bathrooms',
+            'square_meters',
+            'status'
         ]));
         Log::info("Dettagli dell'appartamento aggiornati.");
 
@@ -187,7 +195,7 @@ class ApartmentController extends Controller
 
     public function destroy($id)
     {
-        $apartment = Apartment::findOrFail($id);
+        $apartment = Apartment::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
 
         foreach ($apartment->images as $image) {
             Storage::disk('public')->delete($image->image_url);
