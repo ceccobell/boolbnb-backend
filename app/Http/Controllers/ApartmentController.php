@@ -58,6 +58,11 @@ class ApartmentController extends Controller
             'image.*' => 'image|mimes:jpeg,png,jpg,gif',
             'main_image' => 'required|image|mimes:jpeg,png,jpg,gif',
             'status' => 'required|string|max:30',
+            'services' => 'required|array|min:1',
+            'services.*' => 'exists:services,id',
+        ], [
+            'services.required' => 'Seleziona almeno un servizio.',
+            'services.min' => 'Seleziona almeno un servizio.',
         ]);
 
         $coordinates = $this->getCoordinates($request->address);
@@ -114,20 +119,20 @@ class ApartmentController extends Controller
 
     public function show($id)
     {
-        $apartment = Apartment::findOrFail($id);
+        $apartment = Apartment::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
         return view('apartments.show', compact('apartment'));
     }
 
     public function edit($id)
     {
-        $apartment = Apartment::findOrFail($id);
+        $apartment = Apartment::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
         $services = Service::all();
         return view('apartments.edit', compact('apartment', 'services'));
     }
 
     public function update(Request $request, $id)
     {
-        Log::info("Inizio aggiornamento per l'appartamento ID: {$id}");
+    
         $request->validate([
             'title' => 'required|string|max:255',
             'property' => 'required|string|max:255',
@@ -136,13 +141,13 @@ class ApartmentController extends Controller
             'description' => 'required|string',
             'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
-            'services' => 'nullable|array',
+            'services' => 'required|array|min:1',
             'services.*' => 'exists:services,id'
         ]);
 
         Log::info("Validazione completata per l'appartamento ID: {$id}");
 
-        $apartment = Apartment::findOrFail($id);
+        $apartment = Apartment::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
         Log::info("Appartamento trovato: ", $apartment->toArray());
 
         if ($request->hasFile('main_image')) {
