@@ -58,6 +58,11 @@ class ApartmentController extends Controller
             'image.*' => 'image|mimes:jpeg,png,jpg,gif',
             'main_image' => 'required|image|mimes:jpeg,png,jpg,gif',
             'status' => 'required|string|max:30',
+            'services' => 'required|array|min:1',
+            'services.*' => 'exists:services,id',
+        ], [
+            'services.required' => 'Seleziona almeno un servizio.',
+            'services.min' => 'Seleziona almeno un servizio.',
         ]);
 
         $coordinates = $this->getCoordinates($request->address);
@@ -127,7 +132,7 @@ class ApartmentController extends Controller
 
     public function update(Request $request, $id)
     {
-        Log::info("Inizio aggiornamento per l'appartamento ID: {$id}");
+    
         $request->validate([
             'title' => 'required|string|max:255',
             'property' => 'required|string|max:255',
@@ -136,7 +141,7 @@ class ApartmentController extends Controller
             'description' => 'required|string',
             'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
-            'services' => 'nullable|array',
+            'services' => 'required|array|min:1',
             'services.*' => 'exists:services,id'
         ]);
 
