@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('property', 30);
             $table->string('city', 30);
             $table->string('address');
-            $table->string('description', 50);
+            $table->string('description', 50)->nullable();
             $table->integer('n_rooms');
             $table->integer('n_beds');
             $table->integer('n_bathrooms');

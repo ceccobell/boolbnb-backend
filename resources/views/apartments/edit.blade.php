@@ -37,10 +37,6 @@
                     <textarea name="description" class="form-control" required>{{ $apartment->description }}</textarea>
                 </div>
                 <div class="mb-3 col-6">
-                    <label for="price" class="form-label">Prezzo</label>
-                    <input type="number" name="price" class="form-control" value="{{ $apartment->price }}" required>
-                </div>
-                <div class="mb-3 col-6">
                     <label for="main_image" class="form-label">Immagine copertina (opzionale)</label>
                     <input type="file" name="main_image" class="form-control">
                 </div>
