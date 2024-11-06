@@ -86,7 +86,7 @@ class ServiceSeeder extends Seeder
             ],
             [
                 'service_name' => 'Palestra',
-                'service_icon' => 'fa-solid fa-dumbell',
+                'service_icon' => 'fa-solid fa-dumbbell',
             ],
         ];
 
