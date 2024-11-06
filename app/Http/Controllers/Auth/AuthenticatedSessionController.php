@@ -3,46 +3,55 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
+use App\Models\User;
 
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Display the login view.
+     * Gestisce una richiesta di autenticazione in arrivo.
      */
-    public function create(): View
+    public function store(Request $request): JsonResponse
     {
-        return view('auth.login');
+        // Validazione dei dati di input
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+
+        // Tentativo di autenticazione
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'message' => 'Credenziali non valide',
+            ], 401);
+        }
+
+        // Recupera l'utente autenticato
+        $user = User::where('email', $request->email)->firstOrFail();
+
+        // Genera un token di accesso con Laravel Sanctum
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        // Restituisce il token come risposta JSON
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+        ], 200);
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Distrugge una sessione autenticata.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function destroy(Request $request): JsonResponse
     {
-        $request->authenticate();
+        // Elimina tutti i token dell'utente autenticato
+        $request->user()->tokens()->delete();
 
-        $request->session()->regenerate();
-
-        return redirect()->intended(RouteServiceProvider::HOME);
-    }
-
-    /**
-     * Destroy an authenticated session.
-     */
-    public function destroy(Request $request): RedirectResponse
-    {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect('/');
+        // Restituisce una risposta JSON di conferma
+        return response()->json([
+            'message' => 'Logout effettuato con successo',
+        ], 200);
     }
 }
