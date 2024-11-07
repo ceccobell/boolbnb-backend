@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AddressController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,3 +30,5 @@ Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
 // Logout via API
 Route::post('logout', [AuthenticatedSessionController::class, 'destroy']);
+
+Route::get('/get-address-suggestions', [AddressController::class, 'getSuggestions']);

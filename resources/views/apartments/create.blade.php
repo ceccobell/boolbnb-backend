@@ -32,9 +32,10 @@
                             <input type="text" name="property" class="form-control" required>
                         </div>
                         <div class="mb-3 col-12">
-                            <label for="city" class="form-label">Città ed indirizzo<span
+                            <label for="address" class="form-label">Città ed indirizzo<span
                                     class="text-danger">*</span></label>
-                            <input type="text" name="city" class="form-control" required>
+                            <input type="text" name="address" id="address" class="form-control" required>
+                            <ul id="address-suggestions" class="list-group" style="display: none;"></ul>
                         </div>
                         <div class="mb-3">
                             <label for="description" class="form-label">Descrizione</label>
@@ -88,4 +89,46 @@
             </div>
         </div>
     </div>
+    <script>
+        document.getElementById('address').addEventListener('input', function() {
+            const query = this.value;
+            const suggestionsList = document.getElementById('address-suggestions');
+
+            if (query.length < 3) {
+                suggestionsList.style.display = 'none';
+                return;
+            }
+
+            // Invia una richiesta GET per ottenere i suggerimenti usando Axios
+            axios.get(`/api/get-address-suggestions`, {
+                params: { query: query }
+            })
+            .then(response => {
+                const suggestions = response.data.results;
+                suggestionsList.innerHTML = ''; // Pulisce la lista dei suggerimenti
+
+                if (suggestions.length > 0) {
+                    // Aggiunge i suggerimenti alla lista
+                    suggestions.forEach(suggestion => {
+                        const li = document.createElement('li');
+                        li.classList.add('list-group-item');
+                        li.classList.add('cursor-pointer');
+                        li.textContent = suggestion.address.freeformAddress;
+                        li.onclick = function() {
+                            document.getElementById('address').value = suggestion.address.freeformAddress;
+                            suggestionsList.style.display = 'none';
+                        };
+                        suggestionsList.appendChild(li);
+                    });
+                    suggestionsList.style.display = 'block'; // Mostra la lista
+                } else {
+                    suggestionsList.style.display = 'none'; // Nasconde la lista se non ci sono suggerimenti
+                }
+            })
+            .catch(error => {
+                console.error('Errore nella richiesta dei suggerimenti:', error);
+                suggestionsList.style.display = 'none'; // Nasconde la lista in caso di errore
+            });
+        });
+    </script>
 @endsection

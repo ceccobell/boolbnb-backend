@@ -38,21 +38,27 @@ class ApartmentController extends Controller
 
         if ($response->successful() && isset($response['results'][0]['position'])) {
             $coordinates = $response['results'][0]['position'];
+            $addressDetails = $response['results'][0]['address'];  // Ottieni i dettagli dell'indirizzo
+
+            // Estrai la città dalla risposta
+            $city = $addressDetails['municipality'] ?? null;
+
             return [
                 'latitude' => $coordinates['lat'],
                 'longitude' => $coordinates['lon'],
+                'city' => $city,  // Aggiungi la città ai dati restituiti
             ];
         }
 
         return null;
     }
 
+
     public function store(Request $request)
     {
         $request->validate([
             'title' => 'required|string|max:255',
             'property' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'description' => 'required|string',
             'image.*' => 'image|mimes:jpeg,png,jpg,gif',
@@ -76,7 +82,7 @@ class ApartmentController extends Controller
             'title' => $request->title,
             'property' => $request->property,
             'slug' => Apartment::generateSlug($request->property),
-            'city' => $request->city,
+            'city' => $coordinates['city'],
             'address' => $request->address,
             'n_rooms' => $request->n_rooms,
             'n_beds' => $request->n_beds,
@@ -145,10 +151,8 @@ class ApartmentController extends Controller
             'services.*' => 'exists:services,id'
         ]);
 
-        Log::info("Validazione completata per l'appartamento ID: {$id}");
 
         $apartment = Apartment::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
-        Log::info("Appartamento trovato: ", $apartment->toArray());
 
         if ($request->hasFile('main_image')) {
             $oldMainImage = $apartment->images()->where('is_main', true)->first();
