@@ -28,7 +28,7 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -48,6 +48,15 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        // Verifica se la richiesta è API (JSON)
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'Registration successful',
+                'user' => $user,
+            ], 201); // Stato HTTP 201 per creazione
+        }
+
+        // Risposta per richieste classiche (Blade)
         return redirect(RouteServiceProvider::HOME);
     }
 }
