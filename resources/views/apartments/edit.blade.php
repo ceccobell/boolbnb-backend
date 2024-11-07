@@ -16,32 +16,31 @@
                         </ul>
                     </div>
                 @endif
+                <div class="mb-3 col-12 my-4">
+                    <h5 class="text-danger">I campi con * sono obbligatori</h3>
+                </div>
+                <div class="mb-3 col-6">
+                    <label for="title" class="form-label">Titolo annuncio <span class="text-danger">*</span></label>
+                    <input type="text" name="title" class="form-control" required>
+                </div>
+                <div class="mb-3 col-6">
+                    <label for="property" class="form-label">Proprietà <span class="text-danger">*</span></label>
+                    <input type="text" name="property" class="form-control" required>
+                </div>
                 <div class="mb-3 col-12">
-                    <label for="title" class="form-label">Titolo annuncio</label>
-                    <input type="text" name="title" class="form-control" value="{{ $apartment->title }}" required>
-                </div>
-                <div class="mb-3 col-4">
-                    <label for="property" class="form-label">Proprietà</label>
-                    <input type="text" name="property" class="form-control" value="{{ $apartment->property }}" required>
-                </div>
-                <div class="mb-3 col-4">
-                    <label for="city" class="form-label">Città</label>
+                    <label for="city" class="form-label">Città ed indirizzo</label>
                     <input type="text" name="city" class="form-control" value="{{ $apartment->city }}" required>
-                </div>
-                <div class="mb-3 col-4">
-                    <label for="address" class="form-label">Indirizzo</label>
-                    <input type="text" name="address" class="form-control" value="{{ $apartment->address }}" required>
                 </div>
                 <div class="mb-3 col-12">
                     <label for="description" class="form-label">Descrizione</label>
                     <textarea name="description" class="form-control" required>{{ $apartment->description }}</textarea>
                 </div>
                 <div class="mb-3 col-6">
-                    <label for="main_image" class="form-label">Immagine copertina (opzionale)</label>
+                    <label for="main_image" class="form-label">Immagine Copertina (opzionale)</label>
                     <input type="file" name="main_image" class="form-control">
                 </div>
                 <div class="mb-3 col-6">
-                    <label for="image[]" class="form-label">Nuova Immagine (opzionale)</label>
+                    <label for="image[]" class="form-label">Altre Immagini (opzionale)</label>
                     <input type="file" name="image[]" class="form-control" multiple>
                 </div>
                 @foreach ($services as $service)
