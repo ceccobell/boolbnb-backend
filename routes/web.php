@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApartmentController;
+use App\Http\Controllers\AddressController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -30,5 +32,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('apartments', ApartmentController::class);
 });
+
+Route::get('/get-address-suggestions', [AddressController::class, 'getSuggestions'])->name('address.suggestions');
 
 require __DIR__.'/auth.php';

@@ -38,9 +38,12 @@ class ApartmentController extends Controller
 
         if ($response->successful() && isset($response['results'][0]['position'])) {
             $coordinates = $response['results'][0]['position'];
+            $addressDetails = $response['results'][0]['address'];
+            $city = $addressDetails['municipality'] ?? null;
             return [
                 'latitude' => $coordinates['lat'],
                 'longitude' => $coordinates['lon'],
+                'city' => $city,
             ];
         }
 
@@ -52,9 +55,7 @@ class ApartmentController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'property' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'description' => 'required|string',
             'image.*' => 'image|mimes:jpeg,png,jpg,gif',
             'main_image' => 'required|image|mimes:jpeg,png,jpg,gif',
             'status' => 'required|string|max:30',
@@ -76,7 +77,7 @@ class ApartmentController extends Controller
             'title' => $request->title,
             'property' => $request->property,
             'slug' => Apartment::generateSlug($request->property),
-            'city' => $request->city,
+            'city' => $coordinates['city'],
             'address' => $request->address,
             'n_rooms' => $request->n_rooms,
             'n_beds' => $request->n_beds,
