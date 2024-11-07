@@ -5,15 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Apartment;
 
+
 class ApartmentSearchController extends Controller
 {
     public function searchNearbyApartments(Request $request)
     {
-        $location = $request->input('location');
+        $location = $request->input('address');
         $radius = $request->input('radius', 20);
         $minRooms = $request->input('min_rooms');
         $minBeds = $request->input('min_beds');
-        $requiredServices = $request->input('services', []);
+        $requiredServices = $request->input('services_filtered', []);
 
         // Ottieni le coordinate usando la funzione esistente
         $coordinates = app(ApartmentController::class)->getCoordinates($location);
@@ -35,7 +36,7 @@ class ApartmentSearchController extends Controller
             })
             ->when(!empty($requiredServices), function($query) use ($requiredServices) {
                 $query->whereHas('services', function($q) use ($requiredServices) {
-                    $q->whereIn('service_name', $requiredServices);
+                    $q->whereIn('service_id', $requiredServices);
                 }, '=', count($requiredServices));
             })
             ->get();
