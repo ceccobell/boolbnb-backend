@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\ApartmentSearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,3 +33,5 @@ Route::post('login', [AuthenticatedSessionController::class, 'store']);
 Route::post('logout', [AuthenticatedSessionController::class, 'destroy']);
 
 Route::get('/get-address-suggestions', [AddressController::class, 'getSuggestions']);
+
+Route::get('/search-apartments', [ApartmentSearchController::class, 'searchNearbyApartments']);
