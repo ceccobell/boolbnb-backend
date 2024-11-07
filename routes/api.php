@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ApartmentSearchController;
+use App\Http\Controllers\ServiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,3 +36,5 @@ Route::post('logout', [AuthenticatedSessionController::class, 'destroy']);
 Route::get('/get-address-suggestions', [AddressController::class, 'getSuggestions']);
 
 Route::get('/search-apartments', [ApartmentSearchController::class, 'searchNearbyApartments']);
+
+Route::get('/services', [ServiceController::class, 'index']);
