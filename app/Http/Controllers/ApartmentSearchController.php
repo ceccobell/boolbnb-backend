@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Apartment;
+use Illuminate\Support\Carbon;
+
 
 
 class ApartmentSearchController extends Controller
@@ -41,17 +43,30 @@ class ApartmentSearchController extends Controller
             })
             ->get();
 
-        $apartments->each(function ($apartment) {
+        // Separare gli appartamenti sponsorizzati e non
+        $apartmentsWithSponsorship = $apartments->filter(function ($apartment) {
+            // Controlla se l'appartamento ha una sponsorizzazione attiva
+            return $apartment->packages()->where('sponsorship_end', '>', Carbon::now())->exists();
+        });
+
+        $apartmentsWithoutSponsorship = $apartments->diff($apartmentsWithSponsorship);
+
+        // Unire gli appartamenti sponsorizzati (al primo posto) con quelli senza sponsorizzazione
+        $sortedApartments = $apartmentsWithSponsorship->merge($apartmentsWithoutSponsorship);
+
+        // Aggiungere l'URL delle immagini
+        $sortedApartments->each(function ($apartment) {
             $apartment->images->each(function ($image) {
                 $image->url = asset('storage/' . $image->image_url);
             });
         });
-        
+
         // Filtra in base al raggio usando la funzione Haversine
-        $nearbyApartments = $apartments->filter(function($apartment) use ($originLat, $originLon, $radius) {
+        $nearbyApartments = $sortedApartments->filter(function($apartment) use ($originLat, $originLon, $radius) {
             $distance = $this->haversineDistance($originLat, $originLon, $apartment->latitude, $apartment->longitude);
             return $distance <= $radius;
         });
+
 
         return response()->json($nearbyApartments->values());
     }

@@ -76,8 +76,14 @@ class SponsorshipController extends Controller
         })
         ->get();
 
+        $apartments->each(function ($apartment) {
+            $apartment->images->each(function ($image) {
+                $image->url = asset('storage/' . $image->image_url);
+            });
+        });
+
         return response()->json([
-             $apartments,
+             "apartments" => $apartments,
         ]);
     }
 
