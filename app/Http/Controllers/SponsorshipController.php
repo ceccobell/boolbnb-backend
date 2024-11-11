@@ -55,4 +55,30 @@ class SponsorshipController extends Controller
             'packages' => $packages,
         ], 200);
     }
+
+    public function getApartmentsWithActiveSponsorship()
+    {
+        // Recupera gli appartamenti con una sponsorizzazione attiva
+        $apartments = Apartment::whereHas('packages', function ($query) {
+            $query->where('sponsorship_end', '>', Carbon::now()); // Controlla se la sponsorizzazione è ancora attiva
+        })
+        ->with(['packages' => function ($query) {
+            $query->where('sponsorship_end', '>', Carbon::now())
+                ->orderByDesc('sponsorship_start'); // Ordina per data di inizio della sponsorizzazione
+        }])
+        ->orderByDesc(function ($query) {
+            // Ordina gli appartamenti in base alla data di inizio della sponsorizzazione più recente
+            $query->select('sponsorship_start')
+                ->from('apartment_package')  // La tabella pivot che contiene le informazioni sulla sponsorizzazione
+                ->whereColumn('apartment_id', 'apartments.id')
+                ->orderByDesc('sponsorship_start')  // Ordinamento in ordine decrescente
+                ->limit(1);  // Considera solo la sponsorizzazione più recente per ogni appartamento
+        })
+        ->get();
+
+        return response()->json([
+             $apartments,
+        ]);
+    }
+
 }

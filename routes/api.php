@@ -50,3 +50,6 @@ Route::get('/services', [ServiceController::class, 'index']);
 Route::post('/sponsor-apartment', [SponsorshipController::class, 'sponsorApartment']);
 
 Route::get('/packages', [SponsorshipController::class, 'getSponsorPackages']);
+
+Route::get('/sponsoredApartments', [SponsorshipController::class, 'getApartmentsWithActiveSponsorship']);
+
