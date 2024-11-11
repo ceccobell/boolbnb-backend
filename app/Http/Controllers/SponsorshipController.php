@@ -47,4 +47,13 @@ class SponsorshipController extends Controller
             'sponsorship_end' => $sponsorshipEnd,
         ]);
     }
+
+    public function getSponsorPackages()
+    {
+        $packages = Package::all();
+
+        return response()->json([
+            'packages' => $packages,
+        ], 200);
+    }
 }

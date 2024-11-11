@@ -48,3 +48,5 @@ Route::get('/search-apartments', [ApartmentSearchController::class, 'searchNearb
 Route::get('/services', [ServiceController::class, 'index']);
 
 Route::post('/sponsor-apartment', [SponsorshipController::class, 'sponsorApartment']);
+
+Route::get('/packages', [SponsorshipController::class, 'getSponsorPackages']);
