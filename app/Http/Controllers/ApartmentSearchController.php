@@ -30,17 +30,18 @@ class ApartmentSearchController extends Controller
 
         // Recupera tutti gli appartamenti e filtra
         $apartments = Apartment::with('services')
-            ->when($minRooms, function($query) use ($minRooms) {
+            ->when($minRooms, function ($query) use ($minRooms) {
                 $query->where('n_rooms', '>=', $minRooms);
             })
-            ->when($minBeds, function($query) use ($minBeds) {
+            ->when($minBeds, function ($query) use ($minBeds) {
                 $query->where('n_beds', '>=', $minBeds);
             })
-            ->when(!empty($requiredServices), function($query) use ($requiredServices) {
-                $query->whereHas('services', function($q) use ($requiredServices) {
+            ->when(!empty($requiredServices), function ($query) use ($requiredServices) {
+                $query->whereHas('services', function ($q) use ($requiredServices) {
                     $q->whereIn('service_id', $requiredServices);
                 }, '=', count($requiredServices));
             })
+            ->where('status', 'like', 'Disponibile')
             ->get();
 
         // Separare gli appartamenti sponsorizzati e non
@@ -62,7 +63,7 @@ class ApartmentSearchController extends Controller
         });
 
         // Filtra in base al raggio usando la funzione Haversine
-        $nearbyApartments = $sortedApartments->filter(function($apartment) use ($originLat, $originLon, $radius) {
+        $nearbyApartments = $sortedApartments->filter(function ($apartment) use ($originLat, $originLon, $radius) {
             $distance = $this->haversineDistance($originLat, $originLon, $apartment->latitude, $apartment->longitude);
             return $distance <= $radius;
         });

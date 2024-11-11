@@ -62,19 +62,20 @@ class SponsorshipController extends Controller
         $apartments = Apartment::whereHas('packages', function ($query) {
             $query->where('sponsorship_end', '>', Carbon::now()); // Controlla se la sponsorizzazione è ancora attiva
         })
-        ->with(['packages' => function ($query) {
-            $query->where('sponsorship_end', '>', Carbon::now())
-                ->orderByDesc('sponsorship_start'); // Ordina per data di inizio della sponsorizzazione
-        }])
-        ->orderByDesc(function ($query) {
-            // Ordina gli appartamenti in base alla data di inizio della sponsorizzazione più recente
-            $query->select('sponsorship_start')
-                ->from('apartment_package')  // La tabella pivot che contiene le informazioni sulla sponsorizzazione
-                ->whereColumn('apartment_id', 'apartments.id')
-                ->orderByDesc('sponsorship_start')  // Ordinamento in ordine decrescente
-                ->limit(1);  // Considera solo la sponsorizzazione più recente per ogni appartamento
-        })
-        ->get();
+            ->with(['packages' => function ($query) {
+                $query->where('sponsorship_end', '>', Carbon::now())
+                    ->orderByDesc('sponsorship_start'); // Ordina per data di inizio della sponsorizzazione
+            }])
+            ->orderByDesc(function ($query) {
+                // Ordina gli appartamenti in base alla data di inizio della sponsorizzazione più recente
+                $query->select('sponsorship_start')
+                    ->from('apartment_package')  // La tabella pivot che contiene le informazioni sulla sponsorizzazione
+                    ->whereColumn('apartment_id', 'apartments.id')
+                    ->orderByDesc('sponsorship_start')  // Ordinamento in ordine decrescente
+                    ->limit(1);  // Considera solo la sponsorizzazione più recente per ogni appartamento
+            })
+            ->where('status', 'like', 'Disponibile')
+            ->get();
 
         $apartments->each(function ($apartment) {
             $apartment->images->each(function ($image) {
@@ -83,8 +84,7 @@ class SponsorshipController extends Controller
         });
 
         return response()->json([
-             "apartments" => $apartments,
+            "apartments" => $apartments,
         ]);
     }
-
 }
