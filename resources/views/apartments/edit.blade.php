@@ -21,28 +21,29 @@
                 </div>
                 <div class="mb-3 col-6">
                     <label for="title" class="form-label">Titolo annuncio <span class="text-danger">*</span></label>
-                    <input type="text" name="title" class="form-control" value="{{ old('title', $apartment->title) }}" required>
+                    <input type="text" name="title" class="form-control" value="{{ old('title', $apartment->title) }}">
                 </div>
                 <div class="mb-3 col-6">
                     <label for="property" class="form-label">Proprietà <span class="text-danger">*</span></label>
-                    <input type="text" name="property" class="form-control" value="{{ old('property', $apartment->property) }}" required>
+                    <input type="text" name="property" class="form-control"
+                        value="{{ old('property', $apartment->property) }}">
                 </div>
                 <div class="mb-3 col-12">
-                    <label for="address" class="form-label">Città ed indirizzo<span
-                            class="text-danger">*</span></label>
-                    <input type="text" name="address" id="address" class="form-control" value="{{ old('address', $apartment->address) }}" required>
+                    <label for="address" class="form-label">Città ed indirizzo<span class="text-danger">*</span></label>
+                    <input type="text" name="address" id="address" class="form-control"
+                        value="{{ old('address', $apartment->address) }}">
                     <ul id="address-suggestions" class="list-group" style="display: none;"></ul>
                 </div>
                 <div class="mb-3 col-12">
                     <label for="description" class="form-label">Descrizione</label>
-                    <textarea name="description" class="form-control" required>{{ old('description', $apartment->description) }}</textarea>
+                    <textarea name="description" class="form-control">{{ old('description', $apartment->description) }}</textarea>
                 </div>
                 <div class="mb-3 col-6">
-                    <label for="main_image" class="form-label">Immagine Copertina (opzionale)</label>
+                    <label for="main_image" class="form-label">Immagine Copertina</label>
                     <input type="file" name="main_image" class="form-control">
                 </div>
                 <div class="mb-3 col-6">
-                    <label for="image[]" class="form-label">Altre Immagini (opzionale)</label>
+                    <label for="image[]" class="form-label">Altre Immagini</label>
                     <input type="file" name="image[]" class="form-control" multiple>
                 </div>
                 @foreach ($services as $service)
@@ -72,34 +73,37 @@
 
             // Invia una richiesta GET per ottenere i suggerimenti usando Axios
             axios.get(`/api/get-address-suggestions`, {
-                params: { query: query }
-            })
-            .then(response => {
-                const suggestions = response.data.results;
-                suggestionsList.innerHTML = ''; // Pulisce la lista dei suggerimenti
+                    params: {
+                        query: query
+                    }
+                })
+                .then(response => {
+                    const suggestions = response.data.results;
+                    suggestionsList.innerHTML = ''; // Pulisce la lista dei suggerimenti
 
-                if (suggestions.length > 0) {
-                    // Aggiunge i suggerimenti alla lista
-                    suggestions.forEach(suggestion => {
-                        const li = document.createElement('li');
-                        li.classList.add('list-group-item');
-                        li.classList.add('cursor-pointer');
-                        li.textContent = suggestion.address.freeformAddress;
-                        li.onclick = function() {
-                            document.getElementById('address').value = suggestion.address.freeformAddress;
-                            suggestionsList.style.display = 'none';
-                        };
-                        suggestionsList.appendChild(li);
-                    });
-                    suggestionsList.style.display = 'block'; // Mostra la lista
-                } else {
-                    suggestionsList.style.display = 'none'; // Nasconde la lista se non ci sono suggerimenti
-                }
-            })
-            .catch(error => {
-                console.error('Errore nella richiesta dei suggerimenti:', error);
-                suggestionsList.style.display = 'none'; // Nasconde la lista in caso di errore
-            });
+                    if (suggestions.length > 0) {
+                        // Aggiunge i suggerimenti alla lista
+                        suggestions.forEach(suggestion => {
+                            const li = document.createElement('li');
+                            li.classList.add('list-group-item');
+                            li.classList.add('cursor-pointer');
+                            li.textContent = suggestion.address.freeformAddress;
+                            li.onclick = function() {
+                                document.getElementById('address').value = suggestion.address
+                                    .freeformAddress;
+                                suggestionsList.style.display = 'none';
+                            };
+                            suggestionsList.appendChild(li);
+                        });
+                        suggestionsList.style.display = 'block'; // Mostra la lista
+                    } else {
+                        suggestionsList.style.display = 'none'; // Nasconde la lista se non ci sono suggerimenti
+                    }
+                })
+                .catch(error => {
+                    console.error('Errore nella richiesta dei suggerimenti:', error);
+                    suggestionsList.style.display = 'none'; // Nasconde la lista in caso di errore
+                });
         });
     </script>
 @endsection

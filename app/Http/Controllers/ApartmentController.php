@@ -56,20 +56,31 @@ class ApartmentController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'property' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'description' => 'required|string',
-            'image.*' => 'image|mimes:jpeg,png,jpg,gif',
-            'main_image' => 'required|image|mimes:jpeg,png,jpg,gif',
-            'status' => 'required|string|max:30',
-            'services' => 'required|array|min:1',
-            'services.*' => 'exists:services,id',
-        ], [
-            'services.required' => 'Seleziona almeno un servizio.',
-            'services.min' => 'Seleziona almeno un servizio.',
-        ]);
+        $request->validate(
+            [
+                'title' => 'required|string|max:255',
+                'property' => 'required|string|max:255',
+                'address' => 'required|string|max:255',
+                'description' => 'required|string',
+                'image.*' => 'image|mimes:jpeg,png,jpg,gif',
+                'main_image' => 'required|image|mimes:jpeg,png,jpg,gif',
+                'status' => 'required|string|max:30',
+                'services' => 'required|array|min:1',
+                'services.*' => 'exists:services,id',
+            ],
+            [
+                'title.required' => 'Il titolo è obbligatorio.',
+                'title.max' => 'Il titolo non può superare i 255 caratteri.',
+                'property.required' => 'La proprietà è obbligatoria.',
+                'address.required' => 'L\'indirizzo è obbligatorio.',
+                'description.required' => 'La descrizione è obbligatoria.',
+                'main_image.image' => 'Devi caricare un\'immagine principale valida.',
+                'image..image' => 'Ogni immagine deve essere in formato valido.',
+                'services.required' => 'Devi selezionare almeno un servizio.',
+                'services.min' => 'Seleziona almeno un servizio.',
+                'services..exists' => 'Il servizio selezionato non è valido.',
+            ]
+        );
 
         $coordinates = $this->getCoordinates($request->address);
 
@@ -138,18 +149,31 @@ class ApartmentController extends Controller
 
     public function update(Request $request, $id)
     {
-    
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'property' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'description' => 'required|string',
-            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
-            'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
-            'services' => 'required|array|min:1',
-            'services.*' => 'exists:services,id'
-        ]);
+
+        $request->validate(
+            [
+                'title' => 'required|string|max:255',
+                'property' => 'required|string|max:255',
+                'address' => 'required|string|max:255',
+                'description' => 'required|string',
+                'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+                'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+                'services' => 'required|array|min:1',
+                'services.*' => 'exists:services,id'
+            ],
+            [
+                'title.required' => 'Il titolo è obbligatorio.',
+                'title.max' => 'Il titolo non può superare i 255 caratteri.',
+                'property.required' => 'La proprietà è obbligatoria.',
+                'address.required' => 'L\'indirizzo è obbligatorio.',
+                'description.required' => 'La descrizione è obbligatoria.',
+                'main_image.image' => 'Devi caricare un\'immagine principale valida.',
+                'image..image' => 'Ogni immagine deve essere in formato valido.',
+                'services.required' => 'Devi selezionare almeno un servizio.',
+                'services.min' => 'Seleziona almeno un servizio.',
+                'services..exists' => 'Il servizio selezionato non è valido.',
+            ]
+        );
 
 
         $apartment = Apartment::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
