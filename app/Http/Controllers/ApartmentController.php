@@ -23,7 +23,7 @@ class ApartmentController extends Controller
 
     public function create()
     {
-        $services = Service::all();
+        $services = Service::orderBy('service_name', 'asc')->get();
         return view('apartments.create', compact('services'));
     }
 
@@ -143,7 +143,7 @@ class ApartmentController extends Controller
     public function edit($id)
     {
         $apartment = Apartment::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
-        $services = Service::all();
+        $services = Service::orderBy('service_name', 'asc')->get();
         return view('apartments.edit', compact('apartment', 'services'));
     }
 
@@ -220,6 +220,8 @@ class ApartmentController extends Controller
             'status'
         ]));
         Log::info("Dettagli dell'appartamento aggiornati.");
+
+
 
         $apartment->services()->sync($request->input('services', []));
 
