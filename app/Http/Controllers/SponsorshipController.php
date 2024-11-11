@@ -28,10 +28,9 @@ class SponsorshipController extends Controller
             ->orderByDesc('sponsorship_end')
             ->first();
 
-        // Definisce la data di inizio
-        $sponsorshipStart = $activeSponsorship ? $activeSponsorship->pivot->sponsorship_end : Carbon::now();
-        // Calcola la data di fine in base alle ore definite dal pacchetto
+        $sponsorshipStart = $activeSponsorship ? Carbon::parse($activeSponsorship->pivot->sponsorship_end) : Carbon::now();
         $sponsorshipEnd = $sponsorshipStart->copy()->addHours($package->hours);
+
 
         // Assegna il nuovo pacchetto all'appartamento con le date calcolate
         $apartment->packages()->attach($packageId, [

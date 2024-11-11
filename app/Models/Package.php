@@ -17,7 +17,7 @@ class Package extends Model
 
     public function apartments()
     {
-        return $this->belongsToMany(Apartment::class)->withPivot('sponsor_start', 'sponsor_end')->withTimestamps();
+        return $this->belongsToMany(Apartment::class)->withPivot('sponsorship_start', 'sponsorship_end')->withTimestamps();
     }
 
 }
