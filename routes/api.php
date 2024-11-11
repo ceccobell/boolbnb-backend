@@ -9,6 +9,7 @@ use App\Http\Controllers\ApartmentSearchController;
 use App\Http\Controllers\ApartmentController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserApartmentController;
+use App\Http\Controllers\SponsorshipController;
 
 
 /*
@@ -45,3 +46,5 @@ Route::get('/get-address-suggestions', [AddressController::class, 'getSuggestion
 Route::get('/search-apartments', [ApartmentSearchController::class, 'searchNearbyApartments']);
 
 Route::get('/services', [ServiceController::class, 'index']);
+
+Route::post('/sponsor-apartment', [SponsorshipController::class, 'sponsorApartment']);

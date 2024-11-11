@@ -15,9 +15,9 @@ class Package extends Model
         'hours',
     ];
 
-    // Relazione molti a molti con Sponsor (attraverso la tabella sponsor)
-    public function sponsors()
+    public function apartments()
     {
-        return $this->hasMany(Sponsor::class);
+        return $this->belongsToMany(Apartment::class)->withPivot('sponsor_start', 'sponsor_end')->withTimestamps();
     }
+
 }

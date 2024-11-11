@@ -40,10 +40,11 @@ class Apartment extends Model
     }
 
 
-    public function sponsors()
+    public function packages()
     {
-        return $this->belongsToMany(Sponsor::class);
+        return $this->belongsToMany(Package::class)->withPivot('sponsor_start', 'sponsor_end')->withTimestamps();
     }
+
 
 
     public function services()
