@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ApartmentSearchController;
+use App\Http\Controllers\ApartmentController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\UserApartmentController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +26,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/myapartments', [UserApartmentController::class, 'index']);
+    Route::post('/myapartments/{apartment}/sponsor', [UserApartmentController::class, 'sponsorApartment']);
+});
 
 // Registrazione via API
 Route::post('register', [RegisteredUserController::class, 'store']);
