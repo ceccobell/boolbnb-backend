@@ -38,6 +38,35 @@
                     <label for="description" class="form-label">Descrizione</label>
                     <textarea name="description" class="form-control">{{ old('description', $apartment->description) }}</textarea>
                 </div>
+                <div class="mb-3 col-3">
+                    <label for="n_rooms" class="form-label">Numero Camere <span class="text-danger">*</span></label>
+                    <input type="number" min="1" name="n_rooms" class="form-control" required
+                        {{ old('n_rooms', $apartment->n_rooms) }}>
+                </div>
+                <div class="mb-3 col-3">
+                    <label for="n_beds" class="form-label">Posti letto <span class="text-danger">*</span></label>
+                    <input type="number" min="1" name="n_beds" class="form-control" required
+                        {{ old('n_beds', $apartment->n_beds) }}>
+                </div>
+                <div class="mb-3 col-3">
+                    <label for="n_bathrooms" class="form-label">Numero bagni <span class="text-danger">*</span></label>
+                    <input type="number" min="1" name="n_bathrooms" class="form-control" required
+                        {{ old('n_bathrooms', $apartment->n_bathrooms) }}>
+                </div>
+                <div class="mb-3 col-3">
+                    <label for="square_meters" class="form-label">Metri quadri <span class="text-danger">*</span></label>
+                    <input type="number" name="square_meters" class="form-control" required
+                        {{ old('square_meters', $apartment->square_meters) }}>
+                </div>
+                <div class="mb-3 col-4">
+                    <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                    <select name="status" class="form-control" id="">
+                        <option value="Disponibile" {{ $apartment->status == 'Disponibile' ? 'selected' : '' }}>
+                            Disponibile</option>
+                        <option value="Non Disponibile" {{ $apartment->status == 'NonDisponibile' ? 'selected' : '' }}>
+                            Non Disponibile</option>
+                    </select>
+                </div>
                 <div class="mb-3 col-6">
                     <label for="main_image" class="form-label">Immagine Copertina</label>
                     <input type="file" name="main_image" class="form-control">
@@ -52,7 +81,8 @@
                             <input type="checkbox" name="services[]" value="{{ $service->id }}" class="form-check-input"
                                 id="service-{{ $service->id }}"
                                 {{ $apartment->services->contains($service->id) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="service-{{ $service->id }}">{{ $service->service_name }}
+                            <label class="form-check-label"
+                                for="service-{{ $service->id }}">{{ $service->service_name }}
                                 <i class="{{ $service->service_icon }}"></i></label>
                         </div>
                     </div>

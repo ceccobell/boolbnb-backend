@@ -69,8 +69,18 @@
                         </div>
                         <div class="mb-3 col-4">
                             <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
-                            <input type="text" name="status" class="form-control" required value="Disponibile">
+                            <select name="status" class="form-control" required>
+                                <option value="Disponibile"
+                                    {{ old('status', $apartment->status ?? '') == 'Disponibile' ? 'selected' : '' }}>
+                                    Disponibile
+                                </option>
+                                <option value="Non Disponibile"
+                                    {{ old('status', $apartment->status ?? '') == 'Non Disponibile' ? 'selected' : '' }}>
+                                    Non Disponibile
+                                </option>
+                            </select>
                         </div>
+
                         <div class="mb-3 col-4">
                             <label for="main_image" class="form-label">Immagine Copertina</label>
                             <input type="file" name="main_image" class="form-control" required>

@@ -160,6 +160,7 @@ class ApartmentController extends Controller
                 'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
                 'services' => 'required|array|min:1',
                 'services.*' => 'exists:services,id'
+
             ],
             [
                 'title.required' => 'Il titolo è obbligatorio.',
@@ -168,10 +169,10 @@ class ApartmentController extends Controller
                 'address.required' => 'L\'indirizzo è obbligatorio.',
                 'description.required' => 'La descrizione è obbligatoria.',
                 'main_image.image' => 'Devi caricare un\'immagine principale valida.',
-                'image..image' => 'Ogni immagine deve essere in formato valido.',
+                'image.image' => 'Ogni immagine deve essere in formato valido.',
                 'services.required' => 'Devi selezionare almeno un servizio.',
                 'services.min' => 'Seleziona almeno un servizio.',
-                'services..exists' => 'Il servizio selezionato non è valido.',
+                'services.exists' => 'Il servizio selezionato non è valido.',
             ]
         );
 
