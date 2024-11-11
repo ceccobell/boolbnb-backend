@@ -41,6 +41,12 @@ class ApartmentSearchController extends Controller
             })
             ->get();
 
+        $apartments->each(function ($apartment) {
+            $apartment->images->each(function ($image) {
+                $image->url = asset('storage/' . $image->image_url);
+            });
+        });
+        
         // Filtra in base al raggio usando la funzione Haversine
         $nearbyApartments = $apartments->filter(function($apartment) use ($originLat, $originLon, $radius) {
             $distance = $this->haversineDistance($originLat, $originLon, $apartment->latitude, $apartment->longitude);
