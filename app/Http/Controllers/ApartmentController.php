@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 
 class ApartmentController extends Controller
 {
+
     public function index()
     {
         $userId = Auth::id();

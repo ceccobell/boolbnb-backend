@@ -59,5 +59,6 @@ Route::get('/sponsoredApartments', [SponsorshipController::class, 'getApartments
 Route::post('/messages', [MessageController::class, 'store']);
 
 
+
 Route::get('braintree/token', [BraintreeController::class, 'getToken']);
 Route::post('braintree/payment', [BraintreeController::class, 'makePayment']);
