@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Apartment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UserApartmentController extends Controller
 {
@@ -15,7 +16,11 @@ class UserApartmentController extends Controller
     {
         // Ottieni gli appartamenti dell'utente autenticato
         $userId = Auth::id();
-        $apartments = Apartment::where('user_id', $userId)->get();
+        Log::info("User ID: " . Auth::id());
+        $apartments = Apartment::where('user_id', $userId)
+            ->with(['services', 'user:name,surname'])->get();
+
+        Log::info("Apartments: ", $apartments->toArray());
 
         $apartments->each(function ($apartment) {
             $apartment->images->each(function ($image) {
