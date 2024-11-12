@@ -10,6 +10,9 @@ use App\Http\Controllers\ApartmentController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserApartmentController;
 use App\Http\Controllers\SponsorshipController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\BraintreeController;
+
 
 
 /*
@@ -53,3 +56,8 @@ Route::get('/packages', [SponsorshipController::class, 'getSponsorPackages']);
 
 Route::get('/sponsoredApartments', [SponsorshipController::class, 'getApartmentsWithActiveSponsorship']);
 
+Route::post('/messages', [MessageController::class, 'store']);
+
+
+Route::get('braintree/token', [BraintreeController::class, 'getToken']);
+Route::post('braintree/payment', [BraintreeController::class, 'makePayment']);

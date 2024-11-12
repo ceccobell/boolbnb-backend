@@ -29,7 +29,7 @@ class ApartmentSearchController extends Controller
         $originLon = $coordinates['longitude'];
 
         // Recupera tutti gli appartamenti e filtra
-        $apartments = Apartment::with('services')
+        $apartments = Apartment::with('services', 'user')
             ->when($minRooms, function ($query) use ($minRooms) {
                 $query->where('n_rooms', '>=', $minRooms);
             })

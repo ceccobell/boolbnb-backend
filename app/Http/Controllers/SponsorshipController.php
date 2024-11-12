@@ -61,7 +61,7 @@ class SponsorshipController extends Controller
         // Recupera gli appartamenti con una sponsorizzazione attiva
         $apartments = Apartment::whereHas('packages', function ($query) {
             $query->where('sponsorship_end', '>', Carbon::now()); // Controlla se la sponsorizzazione è ancora attiva
-        })->with('services', 'user:name,surname')
+        })->with('services', 'user')
             ->with(['packages' => function ($query) {
                 $query->where('sponsorship_end', '>', Carbon::now())
                     ->orderByDesc('sponsorship_start'); // Ordina per data di inizio della sponsorizzazione
