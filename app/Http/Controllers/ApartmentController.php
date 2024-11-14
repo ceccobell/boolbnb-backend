@@ -154,6 +154,7 @@ class ApartmentController extends Controller
 
     public function update(Request $request, $id)
     {
+        Log::info('Request data:', $request->all());
 
         $request->validate(
             [
@@ -161,11 +162,15 @@ class ApartmentController extends Controller
                 'property' => 'required|string|max:255',
                 'address' => 'required|string|max:255',
                 'description' => 'required|string',
+                'n_rooms' => 'required|integer|min:1',
+                'n_beds' => 'required|integer|min:1',
+                'n_bathrooms' => 'required|integer|min:1',
+                'square_meters' => 'required|integer|min:1',
+                'status' => 'required|string',
                 'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
                 'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
                 'services' => 'required|array|min:1',
-                'services.*' => 'exists:services,id'
-
+                'services.*' => 'integer|exists:services,id',
             ],
             [
                 'title.required' => 'Il titolo è obbligatorio.',
@@ -173,11 +178,21 @@ class ApartmentController extends Controller
                 'property.required' => 'La proprietà è obbligatoria.',
                 'address.required' => 'L\'indirizzo è obbligatorio.',
                 'description.required' => 'La descrizione è obbligatoria.',
+                'n_rooms.required' => 'Il numero di camere è obbligatorio.',
+                'n_rooms.integer' => 'Il numero di camere deve essere un numero intero.',
+                'n_beds.required' => 'Il numero di posti letto è obbligatorio.',
+                'n_beds.integer' => 'Il numero di posti letto deve essere un numero intero.',
+                'n_bathrooms.required' => 'Il numero di bagni è obbligatorio.',
+                'n_bathrooms.integer' => 'Il numero di bagni deve essere un numero intero.',
+                'square_meters.required' => 'I metri quadri sono obbligatori.',
+                'square_meters.integer' => 'I metri quadri devono essere un numero intero.',
+                'status.required' => 'Lo status è obbligatorio.',
                 'main_image.image' => 'Devi caricare un\'immagine principale valida.',
-                'image.image' => 'Ogni immagine deve essere in formato valido.',
+                'image.*.image' => 'Ogni immagine deve essere in formato valido.',
                 'services.required' => 'Devi selezionare almeno un servizio.',
                 'services.min' => 'Seleziona almeno un servizio.',
-                'services.exists' => 'Il servizio selezionato non è valido.',
+                'services.*.integer' => 'L\'ID del servizio deve essere un numero intero.',
+                'services.*.exists' => 'Il servizio selezionato non è valido.',
             ]
         );
 
@@ -259,7 +274,7 @@ class ApartmentController extends Controller
         }
 
         $apartment->delete();
-        
+
         if (request()->wantsJson()) {
             return response()->json(['message' => 'Apartment deleted successfully.']);
         }

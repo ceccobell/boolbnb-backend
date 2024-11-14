@@ -32,7 +32,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/addapartment', [ApartmentController::class, 'store']);
-    Route::put('/editapartment/{id}', [ApartmentController::class, 'update']);
+    Route::post('/editapartment/{id}', [ApartmentController::class, 'update']);
     Route::delete('/deleteapartment/{id}', [ApartmentController::class, 'destroy']);
     Route::get('/myapartments', [UserApartmentController::class, 'index']);
     Route::post('/myapartments/{apartment}/sponsor', [UserApartmentController::class, 'sponsorApartment']);
