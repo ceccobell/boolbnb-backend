@@ -16,18 +16,34 @@ class UserApartmentController extends Controller
         // Ottieni gli appartamenti dell'utente autenticato
         $userId = Auth::id();
         $apartments = Apartment::where('user_id', $userId)
-            ->with(['services', 'user'])->get();
+            ->with([
+                'services', 
+                'user',
+                'packages' => function ($query) {
+                    $query->withPivot('sponsorship_end')->orderByDesc('pivot_sponsorship_end')->limit(1);
+                }
+            ])
+            ->get();
 
         $apartments->each(function ($apartment) {
-            $apartment->images->each(function ($image) {
-                $image->url = asset('storage/' . $image->image_url);
-            });
+        $apartment->images->each(function ($image) {
+            $image->url = asset('storage/' . $image->image_url);
         });
+
+        // Formattazione della data 'sponsorship_end' senza orario
+        $apartment->packages->each(function ($package) {
+            if ($package->pivot->sponsorship_end) {
+                $package->pivot->sponsorship_end = \Carbon\Carbon::parse($package->pivot->sponsorship_end)->format('d-m-Y');
+            }
+        });
+    });
 
         return response()->json([
             'apartments' => $apartments,
         ], 200);
     }
+
+
 
     /**
      * Sponsorizza un appartamento specifico.
