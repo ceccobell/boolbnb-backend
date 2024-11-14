@@ -51,4 +51,26 @@ class MessageController extends Controller
         ]);
     }
 
+    public function markAsRead($message_id)
+    {
+        // Trova il messaggio con l'ID fornito
+        $message = Message::find($message_id);
+
+        // Verifica se il messaggio esiste
+        if (!$message) {
+            return response()->json(['error' => 'Message not found'], 404);
+        }
+
+        // Se il messaggio non è già stato letto, aggiorna il campo message_seen
+        if (!$message->message_seen) {
+            $message->message_seen = true;
+            $message->save(); // Salva l'aggiornamento nel database
+            return response()->json(['message' => 'Message marked as read']);
+        }
+
+        // Se il messaggio è già stato letto, restituisci un messaggio
+        return response()->json(['message' => 'Message is already marked as read']);
+    }
+
+
 }

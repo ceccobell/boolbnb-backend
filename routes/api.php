@@ -63,5 +63,8 @@ Route::post('/messages', [MessageController::class, 'store']);
 
 Route::get('/apartments/{apartment_id}/messages', [MessageController::class, 'getMessagesByApartment']);
 
+Route::post('/messages/{message_id}/read', [MessageController::class, 'markAsRead']);
+
+
 Route::get('braintree/token', [BraintreeController::class, 'getToken']);
 Route::post('braintree/payment', [BraintreeController::class, 'makePayment']);
