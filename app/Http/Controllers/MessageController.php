@@ -32,8 +32,23 @@ class MessageController extends Controller
 
     public function getMessagesByApartment($apartment_id)
     {
-        $messages = Message::where('apartment_id', $apartment_id)->get();
+        // Recupera i messaggi non letti
+        $unreadMessages = Message::where('apartment_id', $apartment_id)
+            ->where('message_seen', false)
+            ->orderByDesc('created_at')
+            ->get();
 
-        return response()->json(['message' => $messages]);
+        // Recupera i messaggi letti
+        $readMessages = Message::where('apartment_id', $apartment_id)
+            ->where('message_seen', true)
+            ->orderByDesc('created_at')
+            ->get();
+
+        // Restituisci la risposta con i messaggi letti e non letti separati
+        return response()->json([
+            'unreadMessages' => $unreadMessages,
+            'readMessages' => $readMessages,
+        ]);
     }
+
 }
