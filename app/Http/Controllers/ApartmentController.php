@@ -132,6 +132,10 @@ class ApartmentController extends Controller
             $apartment->services()->attach($request->services);
         }
 
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Apartment created successfully.', 'apartment' => $apartment]);
+        }
+
         return redirect()->route('apartments.index')->with('success', 'Apartment created successfully.');
     }
 
@@ -221,15 +225,22 @@ class ApartmentController extends Controller
             'square_meters',
             'status'
         ]));
-        Log::info("Dettagli dell'appartamento aggiornati.");
-
-
 
         $apartment->services()->sync($request->input('services', []));
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Apartment edited successfully.', 'apartment' => $apartment]);
+        }
 
         return redirect()->route('apartments.index')->with('success', 'Apartment updated successfully.');
     }
 
+    /**
+     * Elimina l'appartamento e restituisce la risposta appropriata.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function destroy($id)
     {
         $apartment = Apartment::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
@@ -239,7 +250,20 @@ class ApartmentController extends Controller
             $image->delete();
         }
 
+        if (!$apartment) {
+            if (request()->wantsJson()) {
+                return response()->json(['message' => 'Apartment not found.']);
+            }
+
+            return redirect()->route('apartments.index')->with('error', 'Apartment not found.');
+        }
+
         $apartment->delete();
+        
+        if (request()->wantsJson()) {
+            return response()->json(['message' => 'Apartment deleted successfully.']);
+        }
+
 
         return redirect()->route('apartments.index')->with('success', 'Apartment deleted successfully.');
     }

@@ -29,4 +29,11 @@ class MessageController extends Controller
 
         return response()->json(['message' => 'Message sent successfully!'], 201);
     }
+
+    public function getMessagesByApartment($apartment_id)
+    {
+        $messages = Message::where('apartment_id', $apartment_id)->get();
+
+        return response()->json(['message' => $messages]);
+    }
 }

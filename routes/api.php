@@ -31,6 +31,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/addapartment', [ApartmentController::class, 'store']);
+    Route::put('/editapartment/{id}', [ApartmentController::class, 'update']);
+    Route::delete('/deleteapartment/{id}', [ApartmentController::class, 'destroy']);
     Route::get('/myapartments', [UserApartmentController::class, 'index']);
     Route::post('/myapartments/{apartment}/sponsor', [UserApartmentController::class, 'sponsorApartment']);
 });
@@ -58,7 +61,7 @@ Route::get('/sponsoredApartments', [SponsorshipController::class, 'getApartments
 
 Route::post('/messages', [MessageController::class, 'store']);
 
-
+Route::get('/apartments/{apartment_id}/messages', [MessageController::class, 'getMessagesByApartment']);
 
 Route::get('braintree/token', [BraintreeController::class, 'getToken']);
 Route::post('braintree/payment', [BraintreeController::class, 'makePayment']);
