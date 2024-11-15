@@ -55,21 +55,16 @@ Route::get('/search-apartments', [ApartmentSearchController::class, 'searchNearb
 Route::get('/services', [ServiceController::class, 'index']);
 
 Route::post('/sponsor-apartment', [SponsorshipController::class, 'sponsorApartment']);
-
 Route::get('/packages', [SponsorshipController::class, 'getSponsorPackages']);
-
 Route::get('/sponsoredApartments', [SponsorshipController::class, 'getApartmentsWithActiveSponsorship']);
 
 Route::post('/messages', [MessageController::class, 'store']);
-
 Route::get('/apartments/{apartment_id}/messages', [MessageController::class, 'getMessagesByApartment']);
-
 Route::post('/messages/{message_id}/read', [MessageController::class, 'markAsRead']);
 
 Route::post('/apartments/{apartmentId}/views', [ViewController::class, 'store']);
-
 Route::get('/apartments/{apartmentId}/views', [ViewController::class, 'getViewCount']);
-
+Route::get('/visualizzazioni/settimana', [ViewController::class, 'visualizzazioniSettimanali']);
 
 Route::get('braintree/token', [BraintreeController::class, 'getToken']);
 Route::post('braintree/payment', [BraintreeController::class, 'makePayment']);
