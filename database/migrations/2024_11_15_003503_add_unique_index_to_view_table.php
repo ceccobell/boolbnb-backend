@@ -13,12 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('views', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('apartment_id')->constrained('apartments')->onDelete('cascade');
-            $table->date('view_date');
-            $table->string('ip_address', 45);
-            $table->timestamps();
+        Schema::table('views', function (Blueprint $table) {
             $table->unique(['apartment_id', 'ip_address', 'view_date']);
         });
     }
@@ -30,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('views');
+        Schema::table('view', function (Blueprint $table) {
+            //
+        });
     }
 };

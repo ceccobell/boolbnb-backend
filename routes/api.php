@@ -12,6 +12,7 @@ use App\Http\Controllers\UserApartmentController;
 use App\Http\Controllers\SponsorshipController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\BraintreeController;
+use App\Http\Controllers\ViewController;
 
 
 
@@ -64,6 +65,10 @@ Route::post('/messages', [MessageController::class, 'store']);
 Route::get('/apartments/{apartment_id}/messages', [MessageController::class, 'getMessagesByApartment']);
 
 Route::post('/messages/{message_id}/read', [MessageController::class, 'markAsRead']);
+
+Route::post('/apartments/{apartmentId}/views', [ViewController::class, 'store']);
+
+Route::get('/apartments/{apartmentId}/views', [ViewController::class, 'getViewCount']);
 
 
 Route::get('braintree/token', [BraintreeController::class, 'getToken']);
