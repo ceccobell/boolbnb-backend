@@ -28,11 +28,11 @@ class BraintreeController extends Controller
 
     public function makePayment(Request $request)
     {
-        // Riceve il nonce dal frontend e crea una transazione
         $nonce = $request->input('payment_method_nonce');
+        $amount = $request->input('amount');
 
         $result = $this->gateway->transaction()->sale([
-            'amount' => '10.00', // Importo del pagamento
+            'amount' => $amount,
             'paymentMethodNonce' => $nonce,
             'options' => [
                 'submitForSettlement' => true
@@ -46,4 +46,3 @@ class BraintreeController extends Controller
         }
     }
 }
-
